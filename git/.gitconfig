@@ -1,0 +1,52 @@
+[user]
+		name = Federico Ficarelli
+		email = federico.ficarelli@gmail.com
+
+[core]
+    autocrlf = input
+		# Use custom `.gitignore` and `.gitattributes`
+		excludesfile = ~/.gitignore
+		attributesfile = ~/.gitattributes
+
+[push]
+		default = simple
+
+[credential]
+    # Set credential cache, on Mac will be overriden by MacOSX Keychain
+		helper = cache --timeout=43200
+
+[format]
+		pretty = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
+
+[log]
+		abbrevCommit = true
+
+[pager]
+		stash = false
+
+[branch]
+		autosetupmerge = true
+
+[merge]
+		stat = true
+
+[filter "lfs"]
+    clean = git-lfs clean %f
+    smudge = git-lfs smudge %f
+    required = true
+
+[diff]
+		# Detect copies as well as renames
+		renames = copies
+		# Enable an experimental heuristic that shifts the hunk boundary in an
+		# attempt to make the resulting patch easier to read.
+		indentHeuristic = true
+
+[diff "bin"]
+		# Use `hexdump` to diff binary files
+		textconv = hexdump -v -C
+
+[color]
+		# Use colors in Git commands that are capable of colored output when
+		# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+		ui = auto
