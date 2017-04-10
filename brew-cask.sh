@@ -17,6 +17,7 @@ apps = (
     atom
     iterm2
     pycharm-ce
+    gitkraken
     evernote
     vlc
     spotify
@@ -25,6 +26,8 @@ apps = (
     transmission
     google-play-music-desktop-player
     google-nik-collection
+    soulseek
+    torbrowser
     malwarebytes-anti-malware
 )
 
