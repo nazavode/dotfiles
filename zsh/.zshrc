@@ -213,5 +213,5 @@ alias mv='mv -i'
 alias grep='grep --color=auto'
 # Disable zsh globbing while calling git so stuff like
 # 'git add *foo*' is going to be resolved by git itself
-# and not bu zsh
+# and not by zsh
 alias git='noglob git'
