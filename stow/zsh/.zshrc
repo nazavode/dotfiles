@@ -96,7 +96,7 @@ source "$ZSH/oh-my-zsh.sh"
 
 # autosuggestion color (value reference: colortest-python -n)
 # and buffer size. Override values set by plugin during loading.
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=238"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 ################################################################################
@@ -114,8 +114,10 @@ LANG=en_US.UTF-8
 LANGUAGE=en_US.UTF-8
 
 ################################################################################
-# ENV: linux specific stuff
+# ENV: Linux specific stuff
 ################################################################################
+LINUX_APPS_DIR="$HOME/Apps/bin"
+LINUX_GOPATH="$HOME/go"
 
 # Linuxbrew
 if [[ -d "$HOME/.linuxbrew" ]]; then
@@ -126,16 +128,13 @@ if [[ -d "$HOME/.linuxbrew" ]]; then
 fi
 
 # Manually installed applications, not handled by a package manager
-if [[ -d "$HOME/Apps" ]]; then
-  # protobuf
-  PATH="$HOME/Apps/grpc-1.0.0/bin:$PATH"
-  # grpc
-  PATH="$HOME/Apps/protoc-3.2.0-linux-x86_64/bin:$PATH"
+if [[ -d "$LINUX_APPS_DIR" ]]; then
+  PATH="$LINUX_APPS_DIR:$PATH"
 fi
 
-# golang
-if [[ -d "$HOME/go" ]]; then
-  GOPATH="$HOME/go"
+# Golang
+if [[ -d "$LINUX_GOPATH" ]]; then
+  GOPATH="$LINUX_GOPATH"
   GOBIN="$GOPATH/bin"
   PATH="$GOBIN:$PATH"
 fi
@@ -143,6 +142,8 @@ fi
 ################################################################################
 # ENV: MacOSX specific stuff
 ################################################################################
+MACOSX_APPS_DIR="$HOME/Documents/Apps/bin"
+MACOSX_GOPATH="$HOME/Documents/Hacking/go"
 
 # GNU coreutils provided by brew, overwrite Apple counterparts
 if [[ -d /usr/local/opt/coreutils/libexec/ ]]; then
@@ -151,15 +152,40 @@ if [[ -d /usr/local/opt/coreutils/libexec/ ]]; then
 fi
 
 # Manually installed applications, not handled by a package manager
-if [[ -d "$HOME/Documents/Apps/bin" ]]; then
-  PATH="$HOME/Documents/Apps/bin:$PATH"
+if [[ -d "$MACOSX_APPS_DIR" ]]; then
+  PATH="$MACOSX_APPS_DIR:$PATH"
 fi
 
-# golang
-if [[ -d "$HOME/Documents/Hacking/go" ]]; then
-  GOPATH="$HOME/Documents/Hacking/go"
+# Golang
+if [[ -d "$MACOSX_GOPATH" ]]; then
+  GOPATH="$MACOSX_GOPATH"
   GOBIN="$GOPATH/bin"
-  PATH="$PATH:/usr/local/opt/go/libexec/bin:$GOBIN"
+  # Extra 'libexec' path needed by brewed go
+  PATH="/usr/local/opt/go/libexec/bin:$GOBIN:$PATH"
+fi
+
+################################################################################
+# ENV: ls
+################################################################################
+
+# Colors definition: LS_COLORS is used by GNU, LSCOLORS by Apple/BSD
+# Solarized (https://github.com/seebi/dircolors-solarized/)
+LS_COLORS='no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
+LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
+
+# Detect which `ls` flavor is in use, we need to use different flags
+# for GNU ls and Apple/BSD ls.
+# 1. Tell ls to use colors, fix found here:
+#    https://github.com/mathiasbynens/dotfiles/pull/451
+# 2. Tell GNU ls to not use quotes for file names containing spaces (-N)
+#    since it is the default for the vanilla distro of coreutils
+#    (and it is pretty annoying)
+if ls --color > /dev/null 2>&1; then
+  # GNU
+  LSFLAGS="--color -N"
+else
+  # Apple/BSD
+  LSFLAGS="-G"
 fi
 
 ################################################################################
@@ -176,6 +202,8 @@ export LANGUAGE
 export GRAPHVIZ_DOT
 export GOPATH
 export GOBIN
+export LSCOLORS
+export LS_COLORS
 
 ################################################################################
 # Aliases
@@ -185,25 +213,9 @@ export GOBIN
 # For a full list of active aliases, run `alias`.
 ################################################################################
 
-# Detect which `ls` flavor is in use, we need to tweak aliases for
-# both GNU ls and Apple (BSD) ls.
-# 1. Colors, fix found here:
-#    https://github.com/mathiasbynens/dotfiles/pull/451
-# 2. GNU ls disable quote for file names with spaces (-N)
-if ls --color > /dev/null 2>&1; then
-  # GNU
-  lsflags="--color -N"
-  export LS_COLORS='no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
-else
-  # Apple/BSD
-  lsflags="-G"
-  export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'  # Solarized
-  # LSCOLORS='Gxfxcxdxbxegedabagacad'  # MacOSX default
-fi
-
-alias ls="ls ${lsflags}"
-alias la="ls -ltrha ${lsflags}"
-alias ll="ls -ltrh ${lsflags}"
+alias ls="ls ${LSFLAGS}"
+alias la="ls -ltrha ${LSFLAGS}"
+alias ll="ls -ltrh ${LSFLAGS}"
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
