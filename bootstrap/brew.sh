@@ -46,6 +46,10 @@ brewStuff = (
 
 ################################################################
 
+# 1. Install Brew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+# 2. Install stuff
 brew update
 brew upgrade --all
 brew install "${brewZsh[@]}"
