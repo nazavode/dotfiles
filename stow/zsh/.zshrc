@@ -224,3 +224,8 @@ alias grep='grep --color=auto'
 # 'git add *foo*' is going to be resolved by git itself
 # and not by zsh
 alias git='noglob git'
+# Detect if we are on ubuntu and set the 'xopen'
+# console opener
+if xdg-open --help > /dev/null 2>&1; then
+    alias xopen='xdg-open'
+fi
