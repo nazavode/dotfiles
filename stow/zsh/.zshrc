@@ -114,54 +114,69 @@ LANG=en_US.UTF-8
 LANGUAGE=en_US.UTF-8
 
 ################################################################################
+# ENV: Detect OS
+################################################################################
+
+OS="$(uname 2> /dev/null)"
+
+################################################################################
 # ENV: Linux specific stuff
 ################################################################################
-LINUX_APPS_DIR="$HOME/Apps/bin"
-LINUX_GOPATH="$HOME/go"
+if [[ "$OS" -eq "Linux" ]]; then
+  LINUX_APPS_DIR="$HOME/Apps/bin"
+  LINUX_GOPATH="$HOME/go"
 
-# Linuxbrew
-if [[ -d "$HOME/.linuxbrew" ]]; then
-  PATH="$HOME/.linuxbrew/bin:$PATH"
-  MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
-  INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
-  XDG_DATA_DIRS="$HOME/.linuxbrew/share:$XDG_DATA_DIRS"
-fi
+  # Linuxbrew
+  if [[ -d "$HOME/.linuxbrew" ]]; then
+    PATH="$HOME/.linuxbrew/bin:$PATH"
+    MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+    INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+    XDG_DATA_DIRS="$HOME/.linuxbrew/share:$XDG_DATA_DIRS"
+  fi
 
-# Manually installed applications, not handled by a package manager
-if [[ -d "$LINUX_APPS_DIR" ]]; then
-  PATH="$LINUX_APPS_DIR:$PATH"
-fi
+  # Manually installed applications, not handled by a package manager
+  if [[ -d "$LINUX_APPS_DIR" ]]; then
+    PATH="$LINUX_APPS_DIR:$PATH"
+  fi
 
-# Golang
-if [[ -d "$LINUX_GOPATH" ]]; then
-  GOPATH="$LINUX_GOPATH"
-  GOBIN="$GOPATH/bin"
-  PATH="$GOBIN:$PATH"
+  # Ruby gems - user local installation
+  if [[ -d "${HOME}/.gem/ruby/2.3.0/bin" ]]; then
+    PATH="${HOME}/.gem/ruby/2.3.0/bin:${PATH}"
+  fi
+
+  # Golang
+  if [[ -d "$LINUX_GOPATH" ]]; then
+    GOPATH="$LINUX_GOPATH"
+    GOBIN="$GOPATH/bin"
+    PATH="$GOBIN:$PATH"
+  fi
 fi
 
 ################################################################################
 # ENV: MacOSX specific stuff
 ################################################################################
-MACOSX_APPS_DIR="$HOME/Documents/Apps/bin"
-MACOSX_GOPATH="$HOME/Documents/Hacking/go"
+if [[ "$OS" -eq "Darwin" ]]; then
+  MACOSX_APPS_DIR="$HOME/Documents/Apps/bin"
+  MACOSX_GOPATH="$HOME/Documents/Hacking/go"
 
-# GNU coreutils provided by brew, overwrite Apple counterparts
-if [[ -d /usr/local/opt/coreutils/libexec/ ]]; then
-  PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-  MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-fi
+  # GNU coreutils provided by brew, overwrite Apple counterparts
+  if [[ -d /usr/local/opt/coreutils/libexec/ ]]; then
+    PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+  fi
 
-# Manually installed applications, not handled by a package manager
-if [[ -d "$MACOSX_APPS_DIR" ]]; then
-  PATH="$MACOSX_APPS_DIR:$PATH"
-fi
+  # Manually installed applications, not handled by a package manager
+  if [[ -d "$MACOSX_APPS_DIR" ]]; then
+    PATH="$MACOSX_APPS_DIR:$PATH"
+  fi
 
-# Golang
-if [[ -d "$MACOSX_GOPATH" ]]; then
-  GOPATH="$MACOSX_GOPATH"
-  GOBIN="$GOPATH/bin"
-  # Extra 'libexec' path needed by brewed go
-  PATH="/usr/local/opt/go/libexec/bin:$GOBIN:$PATH"
+  # Golang
+  if [[ -d "$MACOSX_GOPATH" ]]; then
+    GOPATH="$MACOSX_GOPATH"
+    GOBIN="$GOPATH/bin"
+    # Extra 'libexec' path needed by brewed go
+    PATH="/usr/local/opt/go/libexec/bin:$GOBIN:$PATH"
+  fi
 fi
 
 ################################################################################
@@ -204,6 +219,12 @@ export GOPATH
 export GOBIN
 export LSCOLORS
 export LS_COLORS
+
+################################################################################
+# ENV: cleanup
+################################################################################
+
+unset OS
 
 ################################################################################
 # Aliases
