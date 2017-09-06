@@ -122,7 +122,7 @@ OS="$(uname 2> /dev/null)"
 ################################################################################
 # ENV: Linux specific stuff
 ################################################################################
-if [[ "$OS" -eq "Linux" ]]; then
+if [[ "$OS" = "Linux" ]]; then
   LINUX_APPS_DIR="$HOME/Apps/bin"
   LINUX_GOPATH="$HOME/go"
 
@@ -155,7 +155,7 @@ fi
 ################################################################################
 # ENV: MacOSX specific stuff
 ################################################################################
-if [[ "$OS" -eq "Darwin" ]]; then
+if [[ "$OS" = "Darwin" ]]; then
   MACOSX_APPS_DIR="$HOME/Documents/Apps/bin"
   MACOSX_GOPATH="$HOME/Documents/Hacking/go"
 
