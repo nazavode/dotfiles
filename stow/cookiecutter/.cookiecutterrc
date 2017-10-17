@@ -1,0 +1,5 @@
+default_context:
+    full_name: "Federico Ficarelli"
+    email: "federico.ficarelli@gmail.com"
+    github_username: "nazavode"
+cookiecutters_dir: "~/.cookiecutters/"
