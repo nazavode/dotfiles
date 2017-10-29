@@ -139,11 +139,6 @@ if [[ "$OS" = "Linux" ]]; then
     PATH="$LINUX_APPS_DIR:$PATH"
   fi
 
-  # Ruby gems - user local installation
-  if [[ -d "${HOME}/.gem/ruby/2.3.0/bin" ]]; then
-    PATH="${HOME}/.gem/ruby/2.3.0/bin:${PATH}"
-  fi
-
   # Golang
   if [[ -d "$LINUX_GOPATH" ]]; then
     GOPATH="$LINUX_GOPATH"
