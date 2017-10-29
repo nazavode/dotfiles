@@ -170,6 +170,11 @@ if [[ "$OS" = "Darwin" ]]; then
     PATH="$MACOSX_APPS_DIR:$PATH"
   fi
 
+  # Ruby gems - user local installation
+  if [[ -d "${HOME}/.gem/ruby/2.0.0/bin" ]]; then
+    PATH="${HOME}/.gem/ruby/2.0.0/bin:${PATH}"
+  fi
+
   # Golang
   if [[ -d "$MACOSX_GOPATH" ]]; then
     GOPATH="$MACOSX_GOPATH"
