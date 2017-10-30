@@ -1,3 +1,6 @@
+// this file must be linked from ~/.vscode/settings.json
+// (stowed link) to vscode settings location
+// (see here: https://goo.gl/5Vzdwc)
 {
     "editor.fontSize": 14,
     "files.exclude": {
