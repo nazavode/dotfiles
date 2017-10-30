@@ -1,0 +1,23 @@
+{
+    "editor.fontSize": 14,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true,
+        "**/__pycache__": true,
+        "**/*.egg-info": true,
+        "**/.idea": true,
+        "**/.tox": true,
+        "**/.cache": true,
+        "**/.venv": true,
+    },
+    "files.associations": {
+        ".flake8": "ini",
+        ".pylint": "ini"
+    },
+    "python.promptToInstallJupyter": false,
+    "python.unitTest.pyTestEnabled": true,
+}
