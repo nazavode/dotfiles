@@ -125,13 +125,14 @@ OS="$(uname 2> /dev/null)"
 if [[ "$OS" = "Linux" ]]; then
   LINUX_APPS_DIR="$HOME/Apps/bin"
   LINUX_GOPATH="$HOME/go"
+  LINUXBREW="/home/linuxbrew/.linuxbrew"
 
   # Linuxbrew
-  if [[ -d "$HOME/.linuxbrew" ]]; then
-    PATH="$HOME/.linuxbrew/bin:$PATH"
-    MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
-    INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
-    XDG_DATA_DIRS="$HOME/.linuxbrew/share:$XDG_DATA_DIRS"
+  if [[ -d "${LINUXBREW}" ]]; then
+    PATH="${LINUXBREW}/bin:$PATH"
+    MANPATH="${LINUXBREW}/share/man:$MANPATH"
+    INFOPATH="${LINUXBREW}/share/info:$INFOPATH"
+    XDG_DATA_DIRS="${LINUXBREW}/share:$XDG_DATA_DIRS"
   fi
 
   # Manually installed applications, not handled by a package manager
