@@ -5,7 +5,9 @@
 EDITOR="vim"
 
 # dot executable (for PyCharm PlantUML plugin)
-GRAPHVIZ_DOT="$(which dot)"
+if which dot > /dev/null 2>&1; then
+  GRAPHVIZ_DOT="$(which dot)"
+fi
 
 # Locale enforcing to be consistent across systems
 LC_ALL=en_US.UTF-8
