@@ -150,3 +150,15 @@ alias egrep='egrep --color=auto'
 if xdg-open --help > /dev/null 2>&1; then
     alias xopen='xdg-open'
 fi
+
+###############################################################################
+# Work
+###############################################################################
+
+if [[ -d /cineca/ ]]; then
+  export CINECA=1
+  export CINECA_CLUSTER=$(hostname -f | cut -d '.' -f 2)
+  module purge
+  module load git
+  module list
+fi
