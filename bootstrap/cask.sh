@@ -12,9 +12,7 @@
 
 apps = (
     google-chrome
-    google-drive
     dropbox
-    atom
     iterm2
     pycharm-ce
     gitkraken

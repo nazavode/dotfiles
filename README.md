@@ -1,5 +1,5 @@
-dotfiles
-========
+.dotfiles
+=========
 
 My own dotfiles and bootstrap scripts.
 Managed with [GNU Stow](https://www.gnu.org/software/stow/).
@@ -7,6 +7,5 @@ Managed with [GNU Stow](https://www.gnu.org/software/stow/).
 To deploy, from cloned `<repo>/stow`:
 
 ```
-stow -t $HOME <package>
+stow -t $HOME home
 ```
-

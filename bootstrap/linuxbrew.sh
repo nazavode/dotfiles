@@ -26,7 +26,7 @@ brewStuff = (
 ################################################################
 
 # 1. Install linuxbrew
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 
 # 2. Install packages
 brew update
