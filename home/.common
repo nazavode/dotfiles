@@ -43,9 +43,7 @@ function _setup_env_cluster {
 }
 
 function _setup_env_laptop {
-  LINUX_APPS_DIR="$HOME/Apps/bin"
-  LINUX_GOPATH="$HOME/go"
-
+  
   # Linuxbrew
   if [[ -d "$HOME/.linuxbrew" ]]; then
     PATH="$HOME/.linuxbrew/bin:$PATH"
@@ -55,19 +53,23 @@ function _setup_env_laptop {
   fi
 
   # Manually installed applications, not handled by a package manager
+  LINUX_APPS_DIR="$HOME/Apps/bin"
   if [[ -d "$LINUX_APPS_DIR" ]]; then
     PATH="$LINUX_APPS_DIR:$PATH"
   fi
 
-  # Golang
+}
+
+if [[ "$OS" = "Linux" ]]; then
+  # Go
+  LINUX_GOPATH="$HOME/go"
   if [[ -d "$LINUX_GOPATH" ]]; then
     GOPATH="$LINUX_GOPATH"
     GOBIN="$GOPATH/bin"
     PATH="$GOBIN:$PATH"
   fi
-}
 
-if [[ "$OS" = "Linux" ]]; then
+  # System specific stuff
   if [[ -d /cineca/ ]]; then
     _setup_env_cluster
   else
