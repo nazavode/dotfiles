@@ -39,7 +39,7 @@ function _setup_env_cluster {
     INFOPATH="${HOME}/.linuxbrew/share/info:$INFOPATH"
     PATH="${HOME}/.linuxbrew/opt/python/libexec/bin:$PATH"
     # Move brew tmp if needed; set usually to work around file system bugs
-    [[ -n "$CINECA_SCRATCH" ]]; HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
+    [[ -n "$CINECA_SCRATCH" ]] && HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
   }
 }
 
