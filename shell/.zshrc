@@ -40,6 +40,9 @@ setopt EXTENDED_HISTORY        # save timestamp and runtime information
 # Misc configuration
 ################################################################################
 
+# Disable shell termination on EOF (^D)
+setopt ignoreeof
+
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
 
@@ -83,10 +86,6 @@ CASE_SENSITIVE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(zsh-autosuggestions zsh-syntax-highlighting)
-# WARINING: zsh-syntax-highlighting
-# This plugin doesn't play nice with zsh-autosuggestions, when both are loaded
-# a lot of weird things happen. Waiting for this to be released:
-# https://github.com/zsh-users/zsh-autosuggestions/pull/218
 
 # Forces autocompletion to refresh
 zstyle ":completion:*:commands" rehash 1

@@ -25,25 +25,25 @@ OS="$(uname 2> /dev/null)"
 ################################################################################
 
 function _setup_env_cluster {
-  export CINECA=1
-  export CINECA_CLUSTER="$(hostname -f | cut -d '.' -f 2)"
+  # Setup environment in a production cluster
+  CINECA=true
+  CINECA_CLUSTER="$(hostname -f | cut -d '.' -f 2)"
   module purge
   module list
 
   function brewup {
-    export HOMEBREW_TEMP="/scratch/cibo/${USER}/.linuxbrew/tmp"
-    # export HOMEBREW_CACHE="/scratch/cibo/${USER}/.linuxbrew/cache"
+    # Setup linuxbrew and make it available in the current shell
+    HOMEBREW_TEMP="/scratch/cibo/${USER}/.linuxbrew/tmp"
     PATH="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3/bin:$PATH"
     PATH="${HOME}/.linuxbrew/bin:$PATH"
     MANPATH="${HOME}/.linuxbrew/share/man:$MANPATH"
     INFOPATH="${HOME}/.linuxbrew/share/info:$INFOPATH"
-    ## brew-installed python packages
-    # export PATH="${HOME}/.linuxbrew/opt/python/libexec/bin:$PATH"
+    PATH="${HOME}/.linuxbrew/opt/python/libexec/bin:$PATH"
   }
 }
 
-function _setup_env_laptop {
-  
+function _setup_env_workstation {
+  # Setup environment in a personal workstation
   # Linuxbrew
   if [[ -d "$HOME/.linuxbrew" ]]; then
     PATH="$HOME/.linuxbrew/bin:$PATH"
@@ -51,13 +51,6 @@ function _setup_env_laptop {
     INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
     XDG_DATA_DIRS="$HOME/.linuxbrew/share:$XDG_DATA_DIRS"
   fi
-
-  # Manually installed applications, not handled by a package manager
-  LINUX_APPS_DIR="$HOME/Apps/bin"
-  if [[ -d "$LINUX_APPS_DIR" ]]; then
-    PATH="$LINUX_APPS_DIR:$PATH"
-  fi
-
 }
 
 if [[ "$OS" = "Linux" ]]; then
@@ -69,11 +62,10 @@ if [[ "$OS" = "Linux" ]]; then
     PATH="$GOBIN:$PATH"
   fi
 
-  # System specific stuff
   if [[ -d /cineca/ ]]; then
     _setup_env_cluster
   else
-    _setup_env_laptop
+    _setup_env_workstation
   fi
 fi
 
@@ -111,35 +103,8 @@ if [[ "$OS" = "Darwin" ]]; then
 fi
 
 ################################################################################
-# Exports
-################################################################################
-
-export EDITOR
-export PATH
-export MANPATH
-export INFOPATH
-export XDG_DATA_DIRS
-export LC_ALL
-export LANG
-export LANGUAGE
-export GRAPHVIZ_DOT
-export GOPATH
-export GOBIN
-
-################################################################################
-# Cleanup
-################################################################################
-
-unset OS
-
-################################################################################
 # Setup ls for different systems
 ################################################################################
-
-# Colors definition: LS_COLORS is used by GNU, LSCOLORS by Apple/BSD
-# Solarized (https://github.com/seebi/dircolors-solarized/)
-LS_COLORS='no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
-LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 
 # Detect which `ls` flavor is in use, we need to use different flags
 # for GNU ls and Apple/BSD ls.
@@ -148,13 +113,38 @@ LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 # 2. Tell GNU ls to not use quotes for file names containing spaces (-N)
 #    since it is the default for the vanilla distro of coreutils
 #    (and it is pretty annoying)
+# Colors definition: LS_COLORS is used by GNU, LSCOLORS by Apple/BSD
+# Solarized (https://github.com/seebi/dircolors-solarized/)
 if ls --color > /dev/null 2>&1; then
   # GNU
+  LS_COLORS='no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
   LSFLAGS="--color -N"
 else
   # Apple/BSD
+  LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
   LSFLAGS="-G"
 fi
+
+################################################################################
+# Exports
+################################################################################
+
+[[ -n "$EDITOR" ]];         export EDITOR
+[[ -n "$PATH" ]];           export PATH
+[[ -n "$MANPATH" ]];        export MANPATH
+[[ -n "$INFOPATH" ]];       export INFOPATH
+[[ -n "$XDG_DATA_DIRS" ]];  export XDG_DATA_DIRS
+[[ -n "$LC_ALL" ]];         export LC_ALL
+[[ -n "$LANG" ]];           export LANG
+[[ -n "$LANGUAGE" ]];       export LANGUAGE
+[[ -n "$GRAPHVIZ_DOT" ]];   export GRAPHVIZ_DOT
+[[ -n "$GOPATH" ]];         export GOPATH
+[[ -n "$GOBIN" ]];          export GOBIN
+[[ -n "$HOMEBREW_TEMP" ]];  export HOMEBREW_TEMP
+[[ -n "$CINECA" ]];         export CINECA
+[[ -n "$CINECA_CLUSTER" ]]; export CINECA_CLUSTER
+[[ -n "$LS_COLORS" ]];      export LS_COLORS
+[[ -n "$LSCOLORS" ]];       export LSCOLORS
 
 ################################################################################
 # Aliases
@@ -178,3 +168,9 @@ alias egrep='egrep --color=auto'
 if xdg-open --help > /dev/null 2>&1; then
     alias xopen='xdg-open'
 fi
+
+################################################################################
+# Cleanup
+################################################################################
+
+unset OS
