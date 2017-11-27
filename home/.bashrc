@@ -98,6 +98,6 @@ fi
 ################################################################################
 
 # Enable common stuff
-if [ -f ~/.common ]; then
-    . ~/.common
+if [ -f ~/.commonrc ]; then
+    . ~/.commonrc
 fi

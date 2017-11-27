@@ -33,12 +33,13 @@ function _setup_env_cluster {
 
   function brewup {
     # Setup linuxbrew and make it available in the current shell
-    HOMEBREW_TEMP="/scratch/cibo/${USER}/.linuxbrew/tmp"
     PATH="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3/bin:$PATH"
     PATH="${HOME}/.linuxbrew/bin:$PATH"
     MANPATH="${HOME}/.linuxbrew/share/man:$MANPATH"
     INFOPATH="${HOME}/.linuxbrew/share/info:$INFOPATH"
     PATH="${HOME}/.linuxbrew/opt/python/libexec/bin:$PATH"
+    # Move brew tmp if needed; set usually to work around file system bugs
+    [[ -n "$CINECA_SCRATCH" ]]; HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
   }
 }
 

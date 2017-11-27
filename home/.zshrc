@@ -108,6 +108,6 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 alias git='noglob git'
 
 # Enable common stuff
-if [ -f ~/.common ]; then
-    . ~/.common
+if [ -f ~/.commonrc ]; then
+    . ~/.commonrc
 fi
