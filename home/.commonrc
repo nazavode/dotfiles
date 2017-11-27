@@ -39,7 +39,9 @@ function _setup_env_cluster {
     INFOPATH="${HOME}/.linuxbrew/share/info:$INFOPATH"
     PATH="${HOME}/.linuxbrew/opt/python/libexec/bin:$PATH"
     # Move brew tmp if needed; set usually to work around file system bugs
-    [[ -n "$CINECA_SCRATCH" ]] && HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
+    [[ -n "$CINECA_SCRATCH" ]] && export HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
+    # Export modifications
+    export PATH MANPATH INFOPATH
   }
 }
 
@@ -89,11 +91,6 @@ if [[ "$OS" = "Darwin" ]]; then
     PATH="$MACOSX_APPS_DIR:$PATH"
   fi
 
-  # Ruby gems - user local installation
-  if [[ -d "${HOME}/.gem/ruby/2.0.0/bin" ]]; then
-    PATH="${HOME}/.gem/ruby/2.0.0/bin:${PATH}"
-  fi
-
   # Golang
   if [[ -d "$MACOSX_GOPATH" ]]; then
     GOPATH="$MACOSX_GOPATH"
@@ -130,22 +127,22 @@ fi
 # Exports
 ################################################################################
 
-[[ -n "$EDITOR" ]];         export EDITOR
-[[ -n "$PATH" ]];           export PATH
-[[ -n "$MANPATH" ]];        export MANPATH
-[[ -n "$INFOPATH" ]];       export INFOPATH
-[[ -n "$XDG_DATA_DIRS" ]];  export XDG_DATA_DIRS
-[[ -n "$LC_ALL" ]];         export LC_ALL
-[[ -n "$LANG" ]];           export LANG
-[[ -n "$LANGUAGE" ]];       export LANGUAGE
-[[ -n "$GRAPHVIZ_DOT" ]];   export GRAPHVIZ_DOT
-[[ -n "$GOPATH" ]];         export GOPATH
-[[ -n "$GOBIN" ]];          export GOBIN
-[[ -n "$HOMEBREW_TEMP" ]];  export HOMEBREW_TEMP
-[[ -n "$CINECA" ]];         export CINECA
-[[ -n "$CINECA_CLUSTER" ]]; export CINECA_CLUSTER
-[[ -n "$LS_COLORS" ]];      export LS_COLORS
-[[ -n "$LSCOLORS" ]];       export LSCOLORS
+[[ -n "$EDITOR" ]]         && export EDITOR
+[[ -n "$PATH" ]]           && export PATH
+[[ -n "$MANPATH" ]]        && export MANPATH
+[[ -n "$INFOPATH" ]]       && export INFOPATH
+[[ -n "$XDG_DATA_DIRS" ]]  && export XDG_DATA_DIRS
+[[ -n "$LC_ALL" ]]         && export LC_ALL
+[[ -n "$LANG" ]]           && export LANG
+[[ -n "$LANGUAGE" ]]       && export LANGUAGE
+[[ -n "$GRAPHVIZ_DOT" ]]   && export GRAPHVIZ_DOT
+[[ -n "$GOPATH" ]]         && export GOPATH
+[[ -n "$GOBIN" ]]          && export GOBIN
+[[ -n "$HOMEBREW_TEMP" ]]  && export HOMEBREW_TEMP
+[[ -n "$CINECA" ]]         && export CINECA
+[[ -n "$CINECA_CLUSTER" ]] && export CINECA_CLUSTER
+[[ -n "$LS_COLORS" ]]      && export LS_COLORS
+[[ -n "$LSCOLORS" ]]       && export LSCOLORS
 
 ################################################################################
 # Aliases
