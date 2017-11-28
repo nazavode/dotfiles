@@ -21,59 +21,71 @@ LANGUAGE=en_US.UTF-8
 OS="$(uname 2> /dev/null)"
 
 ################################################################################
+# Common utils
+################################################################################
+
+function _setup_go {
+  # Setup Go environment.
+    # Arguments:
+    #   $1 : the GOPATH directory
+  local gopath="$1"
+  if [[ -d "$gopath" ]]; then
+    GOPATH="$gopath"
+    GOBIN="${gopath}/bin"
+    PATH="${gopath}/bin:$PATH"
+  else
+      (>&2 echo "[err] go is not available, specified GOPATH not found: '${gopath}'")
+  fi
+}
+
+function _setup_homebrew {
+    # Setup homebrew environment.
+    # Arguments:
+    #   $1 : the homebrew prefix path
+    local brew_prefix="$1"
+    if [[ -d "$brew_prefix" ]]; then
+      PATH="${brew_prefix}/bin:$PATH"
+      MANPATH="${brew_prefix}/share/man:$MANPATH"
+      INFOPATH="${brew_prefix}/share/info:$INFOPATH"
+      XDG_DATA_DIRS="${brew_prefix}/share:$XDG_DATA_DIRS"
+      # Add python commands installed by homebrew bottles
+      PATH="${brew_prefix}/opt/python/libexec/bin:$PATH"
+      export PATH MANPATH INFOPATH XDG_DATA_DIRS
+    else
+      (>&2 echo "[err] homebrew is not available, prefix not found: '${brew_prefix}'")
+    fi
+  }
+
+################################################################################
 # Linux specific stuff
 ################################################################################
 
-function _setup_env_cluster {
-  # Setup environment in a production cluster
-  CINECA=true
-  CINECA_CLUSTER="$(hostname -f | cut -d '.' -f 2)"
-  module purge
-  module list
-
-  function brewup {
-    # Setup linuxbrew and make it available in the current shell
-    PATH="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3/bin:$PATH"
-    PATH="${HOME}/.linuxbrew/bin:$PATH"
-    MANPATH="${HOME}/.linuxbrew/share/man:$MANPATH"
-    INFOPATH="${HOME}/.linuxbrew/share/info:$INFOPATH"
-    PATH="${HOME}/.linuxbrew/opt/python/libexec/bin:$PATH"
-    # Move brew tmp if needed; set usually to work around file system bugs
-    [[ -n "$CINECA_SCRATCH" ]] && export HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
-    # Export modifications
-    export PATH MANPATH INFOPATH
-  }
-}
-
-function _setup_env_workstation {
-  # Setup environment in a personal workstation
-  # Linuxbrew
-  brew_prefix="/home/linuxbrew/.linuxbrew"
-  if [[ -d "$brew_prefix" ]]; then
-    PATH="${brew_prefix}/bin:$PATH"
-    MANPATH="${brew_prefix}/share/man:$MANPATH"
-    INFOPATH="${brew_prefix}/share/info:$INFOPATH"
-    XDG_DATA_DIRS="${brew_prefix}/share:$XDG_DATA_DIRS"
-  else
-    (>&2 echo "[err] homebrew is not available, prefix not found: '${brew_prefix}'")
-  fi
-  unset brew_prefix
-}
-
 if [[ "$OS" = "Linux" ]]; then
-  # Go
-  LINUX_GOPATH="$HOME/go"
-  if [[ -d "$LINUX_GOPATH" ]]; then
-    GOPATH="$LINUX_GOPATH"
-    GOBIN="$GOPATH/bin"
-    PATH="$GOBIN:$PATH"
+
+  # Setup homebrew; the configuration varies between different systems
+  if [[ -d /cineca/ ]]; then
+    # We're on a production cluster
+    CINECA=true
+    CINECA_CLUSTER="$(hostname -f | cut -d '.' -f 2)"
+    # On clusters is probably wise not to pull in homebrew automagically,
+    # better to avoid possible issues with modules. Provide a lazy initializer
+    # instead:
+    function brewup {
+      # Setup linuxbrew and make it available in the current shell.
+      export PATH="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3/bin:$PATH"
+      # Move brew tmp if needed; usually set to dodge file system bugs
+      [[ -n "$CINECA_SCRATCH" ]] && export HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
+      # Pull in everything
+      _setup_homebrew "${HOME}/.linuxbrew"
+    }
+  else
+    # We're on a personal workstation; no workarounds (at least for now),
+    # just pull in everything asap.
+    _setup_homebrew "/home/linuxbrew/.linuxbrew"
   fi
 
-  if [[ -d /cineca/ ]]; then
-    _setup_env_cluster
-  else
-    _setup_env_workstation
-  fi
+  # Setup go environment
+  _setup_go "${HOME}/go"
 fi
 
 ################################################################################
@@ -81,28 +93,26 @@ fi
 ################################################################################
 
 if [[ "$OS" = "Darwin" ]]; then
-  MACOSX_APPS_DIR="$HOME/Documents/Apps/bin"
-  MACOSX_GOPATH="$HOME/Documents/Hacking/go"
 
   # GNU coreutils provided by brew, overwrite Apple counterparts
-  if [[ -d /usr/local/opt/coreutils/libexec/ ]]; then
+  if [[ -d "/usr/local/opt/coreutils/libexec/" ]]; then
     PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
     MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
   fi
 
-  # Manually installed applications, not handled by a package manager
-  if [[ -d "$MACOSX_APPS_DIR" ]]; then
-    PATH="$MACOSX_APPS_DIR:$PATH"
-  fi
-
-  # Golang
-  if [[ -d "$MACOSX_GOPATH" ]]; then
-    GOPATH="$MACOSX_GOPATH"
-    GOBIN="$GOPATH/bin"
-    # Extra 'libexec' path needed by brewed go
-    PATH="/usr/local/opt/go/libexec/bin:$GOBIN:$PATH"
+  # Setup go environment
+  _setup_go "${HOME}/Documents/Hacking/go"
+  # Extra 'libexec' path needed by brewed go
+  if [[ -d "/usr/local/opt/go/libexec/bin" ]]; then
+    PATH="/usr/local/opt/go/libexec/bin:$PATH"
   fi
 fi
+
+################################################################################
+# Cleanup
+################################################################################
+
+unset OS
 
 ################################################################################
 # Setup ls for different systems
@@ -170,9 +180,3 @@ alias egrep='egrep --color=auto'
 if xdg-open --help > /dev/null 2>&1; then
     alias xopen='xdg-open'
 fi
-
-################################################################################
-# Cleanup
-################################################################################
-
-unset OS
