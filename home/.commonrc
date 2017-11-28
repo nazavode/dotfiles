@@ -48,12 +48,16 @@ function _setup_env_cluster {
 function _setup_env_workstation {
   # Setup environment in a personal workstation
   # Linuxbrew
-  if [[ -d "$HOME/.linuxbrew" ]]; then
-    PATH="$HOME/.linuxbrew/bin:$PATH"
-    MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
-    INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
-    XDG_DATA_DIRS="$HOME/.linuxbrew/share:$XDG_DATA_DIRS"
+  brew_prefix="/home/linuxbrew/.linuxbrew"
+  if [[ -d "$brew_prefix" ]]; then
+    PATH="${brew_prefix}/bin:$PATH"
+    MANPATH="${brew_prefix}/share/man:$MANPATH"
+    INFOPATH="${brew_prefix}/share/info:$INFOPATH"
+    XDG_DATA_DIRS="${brew_prefix}/share:$XDG_DATA_DIRS"
+  else
+    (>&2 echo "[err] homebrew is not available, prefix not found: '${brew_prefix}'")
   fi
+  unset brew_prefix
 }
 
 if [[ "$OS" = "Linux" ]]; then
