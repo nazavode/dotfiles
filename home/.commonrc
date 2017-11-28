@@ -26,8 +26,8 @@ OS="$(uname 2> /dev/null)"
 
 function _setup_go {
   # Setup Go environment.
-    # Arguments:
-    #   $1 : the GOPATH directory
+  # Arguments:
+  #   $1 : the GOPATH directory
   local gopath="$1"
   if [[ -d "$gopath" ]]; then
     GOPATH="$gopath"
@@ -53,6 +53,7 @@ function _setup_homebrew {
       export PATH MANPATH INFOPATH XDG_DATA_DIRS
     else
       (>&2 echo "[err] homebrew is not available, prefix not found: '${brew_prefix}'")
+      return 1
     fi
   }
 
@@ -72,7 +73,16 @@ if [[ "$OS" = "Linux" ]]; then
     # instead:
     function brewup {
       # Setup linuxbrew and make it available in the current shell.
-      export PATH="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3/bin:$PATH"
+      # This function takes no arguments.
+      if which brew > /dev/null 2>&1; then
+        (>&2 echo "[warn] homebrew is already available in the current env, skipping load")
+        return 1
+      fi
+      # Pull in vendored ruby
+      local _rubypath="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3"
+      if [[ -d "$_rubypath" ]]; then
+        export PATH="${_rubypath}/bin:$PATH"
+      fi
       # Move brew tmp if needed; usually set to dodge file system bugs
       [[ -n "$CINECA_SCRATCH" ]] && export HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
       # Pull in everything
