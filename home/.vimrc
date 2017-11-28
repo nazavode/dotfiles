@@ -146,8 +146,8 @@ set expandtab
 
 " Indentation settings for using hard tabs for indent. Display tabs as
 " four characters wide.
-"set shiftwidth=4
-"set tabstop=4
+" set shiftwidth=4
+" set tabstop=4
 
 
 "------------------------------------------------------------
@@ -157,7 +157,7 @@ set expandtab
 
 " Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
 " which is the default
-map Y y$
+" map Y y$
 
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
