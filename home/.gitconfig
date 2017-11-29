@@ -21,9 +21,6 @@
 [log]
 	abbrevCommit = true
 
-[pager]
-	stash = false
-
 [branch]
 	autosetupmerge = true
 

@@ -2,7 +2,10 @@
 # Common stuff
 ################################################################################
 
-EDITOR="vim"
+EDITOR='vim'
+
+# Tell less not to page if the content fits on screen
+LESS="${LESS} -F -X"
 
 # dot executable (for PyCharm PlantUML plugin)
 if which dot > /dev/null 2>&1; then
