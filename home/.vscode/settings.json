@@ -26,16 +26,6 @@
     "editor.minimap.renderCharacters": false,
     "files.autoSave": "afterDelay",
     "editor.multiCursorModifier": "ctrlCmd",
-    "gitlens.advanced.messages": {
-        "suppressCommitHasNoPreviousCommitWarning": false,
-        "suppressCommitNotFoundWarning": false,
-        "suppressFileNotUnderSourceControlWarning": false,
-        "suppressGitVersionWarning": false,
-        "suppressLineUncommittedWarning": false,
-        "suppressNoRepositoryWarning": false,
-        "suppressResultsExplorerNotice": true,
-        "suppressShowKeyBindingsNotice": true
-    },
     "reflow.preferredLineLength": 90,
-    "gitlens.codeLens.recentChange.enabled": false,
+    "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 90, IncludeBlocks: Regroup}",
 }
