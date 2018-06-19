@@ -47,7 +47,7 @@ function _setup_homebrew {
     #   $1 : the homebrew prefix path
     local brew_prefix="$1"
     if [[ -d "$brew_prefix" ]]; then
-      PATH="${brew_prefix}/bin:$PATH"
+      PATH="${brew_prefix}/bin:${brew_prefix}/sbin:$PATH"
       MANPATH="${brew_prefix}/share/man:$MANPATH"
       INFOPATH="${brew_prefix}/share/info:$INFOPATH"
       XDG_DATA_DIRS="${brew_prefix}/share:$XDG_DATA_DIRS"
@@ -80,11 +80,6 @@ if [[ "$OS" = "Linux" ]]; then
       if which brew > /dev/null 2>&1; then
         (>&2 echo "[warn] homebrew is already available in the current env, skipping load")
         return 1
-      fi
-      # Pull in vendored ruby
-      local _rubypath="${HOME}/.linuxbrew/Homebrew/Library/Homebrew/vendor/portable-ruby/2.3.3"
-      if [[ -d "$_rubypath" ]]; then
-        export PATH="${_rubypath}/bin:$PATH"
       fi
       # Move brew tmp if needed; usually set to dodge file system bugs
       [[ -n "$CINECA_SCRATCH" ]] && export HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
