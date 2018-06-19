@@ -82,7 +82,12 @@ if [[ "$OS" = "Linux" ]]; then
         return 1
       fi
       # Move brew tmp if needed; usually set to dodge file system bugs
-      [[ -n "$CINECA_SCRATCH" ]] && export HOMEBREW_TEMP="$CINECA_SCRATCH/.linuxbrew"
+      if [[ -d "${CINECA_SCRATCH}" ]]; then
+          export HOMEBREW_TEMP="${CINECA_SCRATCH}/.linuxbrew/tmp"
+          export HOMEBREW_CACHE="${CINECA_SCRATCH}/.linuxbrew/cache"
+          mkdir -p "${HOMEBREW_TEMP}"
+          mkdir -p "${HOMEBREW_CACHE}"
+      fi
       # Pull in everything
       _setup_homebrew "${HOME}/.linuxbrew"
     }
