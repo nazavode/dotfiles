@@ -48,12 +48,15 @@ function _setup_homebrew {
     local brew_prefix="$1"
     if [[ -d "$brew_prefix" ]]; then
       PATH="${brew_prefix}/bin:${brew_prefix}/sbin:$PATH"
-      MANPATH="${brew_prefix}/share/man:$MANPATH"
       INFOPATH="${brew_prefix}/share/info:$INFOPATH"
       XDG_DATA_DIRS="${brew_prefix}/share:$XDG_DATA_DIRS"
       # Add python commands installed by homebrew bottles
       PATH="${brew_prefix}/opt/python/libexec/bin:$PATH"
-      export PATH MANPATH INFOPATH XDG_DATA_DIRS
+      # Update everything
+      export PATH INFOPATH XDG_DATA_DIRS
+      # Set MANPATH with care to avoid manpath warnings
+      unset MANPATH
+      MANPATH="${brew_prefix}/share/man:" # note the trailing ':'
     else
       (>&2 echo "[err] homebrew is not available, prefix not found: '${brew_prefix}'")
       return 1
@@ -112,7 +115,9 @@ if [[ "$OS" = "Darwin" ]]; then
   # GNU coreutils provided by brew, overwrite Apple counterparts
   if [[ -d "/usr/local/opt/coreutils/libexec/" ]]; then
     PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+    # Set MANPATH with care to avoid manpath warnings
+    unset MANPATH
+    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:" # note the trailing ':'
   fi
 
   # Setup go environment
@@ -158,7 +163,6 @@ fi
 
 [[ -n "$EDITOR" ]]         && export EDITOR
 [[ -n "$PATH" ]]           && export PATH
-[[ -n "$MANPATH" ]]        && export MANPATH
 [[ -n "$INFOPATH" ]]       && export INFOPATH
 [[ -n "$XDG_DATA_DIRS" ]]  && export XDG_DATA_DIRS
 [[ -n "$LC_ALL" ]]         && export LC_ALL
