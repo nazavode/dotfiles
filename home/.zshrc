@@ -21,8 +21,7 @@ DEFAULT_USER="$USER"
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="agnoster"
-VIRTUAL_ENV_DISABLE_PROMPT=1  # needed by theme
+ZSH_THEME="montag"
 
 ################################################################################
 # History, inspired by:
