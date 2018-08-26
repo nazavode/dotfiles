@@ -103,7 +103,7 @@ if [[ "$OS" = "Linux" ]]; then
   fi
 
   # Setup go environment
-  _setup_go "${HOME}/go"
+  _setup_go "${HOME}/src/go"
 fi
 
 ################################################################################
