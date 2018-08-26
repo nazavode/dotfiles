@@ -117,7 +117,7 @@ if [[ "$OS" = "Darwin" ]]; then
     PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
     # Set MANPATH with care to avoid manpath warnings
     unset MANPATH
-    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:" # note the trailing ':'
+    export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:" # note the trailing ':'
   fi
 
   # Setup go environment
