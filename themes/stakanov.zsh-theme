@@ -2,13 +2,18 @@
 # Color configuration
 #
 
-STAKANOV_CONTEXT_COLOR="yellow"
-STAKANOV_DIR_COLOR="white"
-STAKANOV_GIT_CLEAN_COLOR="green"
-STAKANOV_GIT_DIRTY_COLOR="009"
-STAKANOV_EXIT_SUCCESS_COLOR="white"
-STAKANOV_EXIT_ERROR_COLOR="red"
-STAKANOV_VIRTUALENV_COLOR="magenta"
+STAKANOV_PROMPT="%{%F{white}%}»"
+
+STAKANOV_STATUS_RETVAL_ERROR="%{%F{red}%}●"
+STAKANOV_STATUS_PRIVILEGED="%{%F{yellow}%}●"
+STAKANOV_STATUS_HAS_JOBS="%{%F{cyan}%}●"
+
+STAKANOV_COLOR_CONTEXT="yellow"
+STAKANOV_COLOR_PWD="white"
+STAKANOV_COLOR_GIT_CLEAN="green"
+STAKANOV_COLOR_GIT_DIRTY="009"
+STAKANOV_COLOR_VIRTUALENV="magenta"
+STAKANOV_COLOR_BRACE_DEFAULT="default"
 
 #
 # Internal functions
@@ -17,6 +22,7 @@ STAKANOV_VIRTUALENV_COLOR="magenta"
 function stakanov::echo() {
   local content="$1"
   local color="$2"
+  [[ -z "${color}" ]] && color="default"
   echo -n "%{%F{${color}}%}${content}"
 }
 
@@ -52,7 +58,7 @@ function stakanov::context() {
     else
       host="%m"
     fi
-    stakanov::echo "%n@${host}:" "$STAKANOV_CONTEXT_COLOR"
+    stakanov::echo "%n@${host}:" "$STAKANOV_COLOR_CONTEXT"
   fi
 }
 
@@ -60,10 +66,9 @@ function stakanov::git() {
   (( $+commands[git] )) || return
   local ref="$(stakanov::git::ref)"
   if [[ -n "$ref" ]]; then
-    local color="$STAKANOV_GIT_CLEAN_COLOR"
-    local isdirty="$(stakanov::git::isdirty)"
-    if [[ -n "$isdirty" ]]; then
-      color="$STAKANOV_GIT_DIRTY_COLOR"
+    local color="$STAKANOV_COLOR_GIT_CLEAN"
+    if [[ -n "$(stakanov::git::isdirty)" ]]; then
+      color="$STAKANOV_COLOR_GIT_DIRTY"
     fi
     stakanov::echo "[${ref}]" "$color"
   fi
@@ -72,12 +77,13 @@ function stakanov::git() {
 function stakanov::virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"
   if [[ -n $virtualenv_path ]]; then
-    stakanov::echo "[`basename $virtualenv_path`]" "$STAKANOV_VIRTUALENV_COLOR"
+    local venv="$(basename ${virtualenv_path})"
+    stakanov::echo "[${venv}]" "$STAKANOV_COLOR_VIRTUALENV"
   fi
 }
 
 function stakanov::pwd() {
-  stakanov::echo "%~" "$STAKANOV_DIR_COLOR"
+  stakanov::echo "%~" "$STAKANOV_COLOR_PWD"
 }
 
 stakanov::status() {
@@ -86,11 +92,13 @@ stakanov::status() {
   local njobs=$3
   local symbols
   symbols=()
-  [[ $retval -ne 0 ]] && symbols+="%{%F{red}%}●"
-  [[ $uid -eq 0 ]] && symbols+="%{%F{yellow}%}●"
-  [[ $njobs -gt 0 ]] && symbols+="%{%F{cyan}%}●"
+  [[ $retval -ne 0 ]] && symbols+="$STAKANOV_STATUS_RETVAL_ERROR"
+  [[ $uid -eq 0 ]] && symbols+="$STAKANOV_STATUS_PRIVILEGED"
+  [[ $njobs -gt 0 ]] && symbols+="$STAKANOV_STATUS_HAS_JOBS"
 
-  [[ -n "$symbols" ]] && echo -n "{${symbols}%{$reset_color%}}"
+  if [[ -n "$symbols" ]]; then
+    stakanov::echo "%{%F{${STAKANOV_COLOR_BRACE_DEFAULT}}%}{${symbols}%{%F{${STAKANOV_COLOR_BRACE_DEFAULT}}%}}"
+  fi
 }
 
 function stakanov::main() {
@@ -98,13 +106,13 @@ function stakanov::main() {
   local uid=$UID
   local njobs=$(jobs -l | wc -l)
   stakanov::status $retval $uid $njobs
-  stakanov::echo [ yellow
+  stakanov::echo [ "$STAKANOV_COLOR_BRACE_DEFAULT"
   stakanov::context
   stakanov::pwd
-  stakanov::echo ] yellow
+  stakanov::echo ] "$STAKANOV_COLOR_BRACE_DEFAULT"
   stakanov::virtualenv
   stakanov::git
-  stakanov::echo ' »' white
+  stakanov::echo " $STAKANOV_PROMPT"
 }
 
 PROMPT='$(stakanov::main)%{$reset_color%} '
