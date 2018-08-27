@@ -76,7 +76,7 @@ function stakanov::git() {
 
 function stakanov::virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"
-  if [[ -n $virtualenv_path ]]; then
+  if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
     local venv="$(basename ${virtualenv_path})"
     stakanov::echo "[${venv}]" "$STAKANOV_COLOR_VIRTUALENV"
   fi
