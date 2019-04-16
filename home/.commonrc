@@ -73,7 +73,7 @@ if [[ "$OS" = "Linux" ]]; then
   if [[ -d /cineca/ ]]; then
     # We're on a production cluster
     CINECA=true
-    CINECA_CLUSTER="$(hostname -f | cut -d '.' -f 2)"
+    CINECA_CLUSTER="${CINECA_CLUSTER:$(hostname -f | cut -d '.' -f 2)}"
     # On clusters is probably wise not to pull in homebrew automagically,
     # better to avoid possible issues with modules. Provide a lazy initializer
     # instead:
