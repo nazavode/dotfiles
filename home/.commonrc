@@ -104,6 +104,11 @@ if [[ "$OS" = "Linux" ]]; then
 
   # Setup go environment
   _setup_go "${HOME}/src/go"
+
+  # Enable package suggestions
+  if [[ -n "${ZSH}" && -f /etc/zsh_command_not_found ]]; then
+    source /etc/zsh_command_not_found
+  fi
 fi
 
 ################################################################################
@@ -199,3 +204,4 @@ alias egrep='egrep --color=auto'
 if xdg-open --help > /dev/null 2>&1; then
     alias xopen='xdg-open'
 fi
+
