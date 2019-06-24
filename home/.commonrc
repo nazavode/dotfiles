@@ -109,6 +109,11 @@ if [[ "$OS" = "Linux" ]]; then
   if [[ -n "${ZSH}" && -f /etc/zsh_command_not_found ]]; then
     source /etc/zsh_command_not_found
   fi
+
+  # Add .local stuff (e.g.: pip install --user)
+  if [[ -d "${HOME}/.local/bin" ]]; then
+    PATH="${HOME}/.local/bin:$PATH"
+  fi
 fi
 
 ################################################################################
