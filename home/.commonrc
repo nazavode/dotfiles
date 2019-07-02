@@ -41,6 +41,18 @@ function _setup_go {
   fi
 }
 
+function _setup_cargo {
+  # Setup rust+cargo environment.
+  # Arguments:
+  #   $1 : the cargo root directory
+  local cargopath="$1"
+  if [[ -d "$cargopath" ]]; then
+    PATH="${cargopath}/bin:$PATH"
+  else
+      (>&2 echo "[err] cargo is not available, specified path not found: '${cargopath}'")
+  fi
+}
+
 function _setup_homebrew {
     # Setup homebrew environment.
     # Arguments:
@@ -102,8 +114,9 @@ if [[ "$OS" = "Linux" ]]; then
     _setup_homebrew "/home/linuxbrew/.linuxbrew"
   fi
 
-  # Setup go environment
+  # Setup misc environments
   _setup_go "${HOME}/src/go"
+  _setup_cargo "${HOME}/.cargo"
 
   # Enable package suggestions
   if [[ -n "${ZSH}" && -f /etc/zsh_command_not_found ]]; then
