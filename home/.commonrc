@@ -143,8 +143,10 @@ if [[ "$OS" = "Darwin" ]]; then
     export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:" # note the trailing ':'
   fi
 
-  # Setup go environment
+  # Setup misc environments
   _setup_go "${HOME}/Documents/Hacking/go"
+  _setup_cargo "${HOME}/.cargo"
+
   # Extra 'libexec' path needed by brewed go
   if [[ -d "/usr/local/opt/go/libexec/bin" ]]; then
     PATH="/usr/local/opt/go/libexec/bin:$PATH"
