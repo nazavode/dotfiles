@@ -27,6 +27,22 @@ OS="$(uname 2> /dev/null)"
 # Common utils
 ################################################################################
 
+function rsync-music {
+    rsync --verbose \
+        --progress \
+        --iconv=utf-8-mac,utf-8 \
+        --recursive \
+        --times \
+        --update \
+        --exclude=".*" \
+        --include="*.mp3" \
+        --include="*.ogg" \
+        --include="*.flac" \
+        --include="*/" \
+        --exclude="*" \
+        $@
+}
+
 function _setup_go {
   # Setup Go environment.
   # Arguments:
