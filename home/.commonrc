@@ -1,18 +1,18 @@
+# shellcheck disable=SC2148
 ################################################################################
 # Common stuff
 ################################################################################
 
 EDITOR='vim'
 
-# Tell less not to page if the content fits on screen
-LESS="${LESS} -F -X"
+LESS="${LESS} --quit-if-one-screen --no-init --raw-control-chars"
 
 # dot executable (for PyCharm PlantUML plugin)
-if which dot > /dev/null 2>&1; then
-  GRAPHVIZ_DOT="$(which dot)"
+if command -v dot > /dev/null 2>&1; then
+  GRAPHVIZ_DOT="$(command -v dot)"
 fi
 
-# Locale enforcing to be consistent across systems
+# Enforce locale to be consistent across systems
 LC_ALL=en_US.UTF-8
 LANG=en_US.UTF-8
 LANGUAGE=en_US.UTF-8
@@ -21,27 +21,11 @@ LANGUAGE=en_US.UTF-8
 # Detect OS
 ################################################################################
 
-OS="$(uname 2> /dev/null)"
+_os="$(uname 2> /dev/null)"
 
 ################################################################################
 # Common utils
 ################################################################################
-
-function rsync-music {
-    rsync --verbose \
-        --progress \
-        --iconv=utf-8-mac,utf-8 \
-        --recursive \
-        --times \
-        --update \
-        --exclude=".*" \
-        --include="*.mp3" \
-        --include="*.ogg" \
-        --include="*.flac" \
-        --include="*/" \
-        --exclude="*" \
-        $@
-}
 
 function _setup_go {
   # Setup Go environment.
@@ -95,7 +79,7 @@ function _setup_homebrew {
 # Linux specific stuff
 ################################################################################
 
-if [[ "$OS" = "Linux" ]]; then
+if [[ "$_os" = "Linux" ]]; then
 
   # Setup homebrew; the configuration varies between different systems
   if [[ -d /cineca/ ]]; then
@@ -108,7 +92,7 @@ if [[ "$OS" = "Linux" ]]; then
     function brewup {
       # Setup linuxbrew and make it available in the current shell.
       # This function takes no arguments.
-      if which brew > /dev/null 2>&1; then
+      if command -v brew > /dev/null 2>&1; then
         (>&2 echo "[warn] homebrew is already available in the current env, skipping load")
         return 1
       fi
@@ -149,7 +133,7 @@ fi
 # MacOSX specific stuff
 ################################################################################
 
-if [[ "$OS" = "Darwin" ]]; then
+if [[ "$_os" = "Darwin" ]]; then
 
   # GNU coreutils provided by brew, overwrite Apple counterparts
   if [[ -d "/usr/local/opt/coreutils/libexec/" ]]; then
@@ -169,11 +153,6 @@ if [[ "$OS" = "Darwin" ]]; then
   fi
 fi
 
-################################################################################
-# Cleanup
-################################################################################
-
-unset OS
 
 ################################################################################
 # Setup ls for different systems
@@ -191,11 +170,11 @@ unset OS
 if ls --color > /dev/null 2>&1; then
   # GNU
   LS_COLORS='no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
-  LSFLAGS="--color -N"
+  _ls_flags="--color -N"
 else
   # Apple/BSD
   LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
-  LSFLAGS="-G"
+  _ls_flags="-G"
 fi
 
 ################################################################################
@@ -203,18 +182,23 @@ fi
 ################################################################################
 
 [[ -n "$EDITOR" ]]         && export EDITOR
-[[ -n "$PATH" ]]           && export PATH
-[[ -n "$INFOPATH" ]]       && export INFOPATH
-[[ -n "$XDG_DATA_DIRS" ]]  && export XDG_DATA_DIRS
+[[ -n "$LESS" ]]           && export LESS
 [[ -n "$LC_ALL" ]]         && export LC_ALL
 [[ -n "$LANG" ]]           && export LANG
 [[ -n "$LANGUAGE" ]]       && export LANGUAGE
 [[ -n "$GRAPHVIZ_DOT" ]]   && export GRAPHVIZ_DOT
+[[ -n "$PATH" ]]           && export PATH
+[[ -n "$INFOPATH" ]]       && export INFOPATH
+[[ -n "$XDG_DATA_DIRS" ]]  && export XDG_DATA_DIRS
+
 [[ -n "$GOPATH" ]]         && export GOPATH
 [[ -n "$GOBIN" ]]          && export GOBIN
+
 [[ -n "$HOMEBREW_TEMP" ]]  && export HOMEBREW_TEMP
+
 [[ -n "$CINECA" ]]         && export CINECA
 [[ -n "$CINECA_CLUSTER" ]] && export CINECA_CLUSTER
+
 [[ -n "$LS_COLORS" ]]      && export LS_COLORS
 [[ -n "$LSCOLORS" ]]       && export LSCOLORS
 
@@ -226,9 +210,12 @@ fi
 # For a full list of active aliases, run `alias`.
 ################################################################################
 
-alias ls="ls ${LSFLAGS}"
-alias la="ls -ltrha ${LSFLAGS}"
-alias ll="ls -ltrh ${LSFLAGS}"
+# shellcheck disable=SC2139
+alias ls="ls ${_ls_flags}"
+# shellcheck disable=SC2139
+alias la="ls -ltrha ${_ls_flags}"
+# shellcheck disable=SC2139
+alias ll="ls -ltrh ${_ls_flags}"
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
@@ -240,4 +227,13 @@ alias egrep='egrep --color=auto'
 if xdg-open --help > /dev/null 2>&1; then
     alias xopen='xdg-open'
 fi
+
+################################################################################
+# Cleanup
+################################################################################
+
+unset _os
+unset -f _setup_go
+unset -f _setup_cargo
+unset -f _setup_homebrew
 
