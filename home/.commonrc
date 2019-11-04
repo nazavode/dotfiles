@@ -33,8 +33,11 @@ function _setup_go {
   #   $1 : the GOPATH directory
   local gopath="$1"
   if [[ -d "$gopath" ]]; then
-    GOPATH="$gopath"
-    GOBIN="${gopath}/bin"
+    # New Go doesn't require env vars anymore,
+    # just make sure compiled binaries are
+    # available:
+    # GOPATH="$gopath"
+    # GOBIN="${gopath}/bin"
     PATH="${gopath}/bin:$PATH"
   else
       (>&2 echo "[err] go is not available, specified GOPATH not found: '${gopath}'")
@@ -145,7 +148,7 @@ if [[ "$_os" = "Darwin" ]]; then
 
   # Setup misc environments
   _setup_go "${HOME}/Documents/Hacking/go"
-  _setup_cargo "${HOME}/.cargo"
+  # _setup_cargo "${HOME}/.cargo"
 
   # Extra 'libexec' path needed by brewed go
   if [[ -d "/usr/local/opt/go/libexec/bin" ]]; then
