@@ -1,5 +1,3 @@
-export CINECA_CLUSTER=carmen
-
 ulimit -t unlimited
 
 # chsh doesn't work on CINECA systems,
