@@ -15,12 +15,6 @@
 	# Set credential cache, on Mac will be overriden by MacOSX Keychain
 	helper = cache --timeout=43200
 
-[format]
-	pretty = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
-
-[log]
-	abbrevCommit = true
-
 [branch]
 	autosetupmerge = true
 
