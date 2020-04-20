@@ -5,13 +5,6 @@
 
 EDITOR='vim'
 
-LESS="${LESS} --quit-if-one-screen --no-init --raw-control-chars"
-
-# dot executable (for PyCharm PlantUML plugin)
-if command -v dot > /dev/null 2>&1; then
-  GRAPHVIZ_DOT="$(command -v dot)"
-fi
-
 # Enforce locale to be consistent across systems
 LC_ALL=en_US.UTF-8
 LANG=en_US.UTF-8
