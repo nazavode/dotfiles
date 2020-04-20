@@ -54,3 +54,6 @@
 	# commit hash that has been changed in the remote.
 	# For rationale: https://gist.github.com/gitaarik/8735255
 	update = !git pull && git submodule update --init --recursive
+
+[pull]
+	rebase = true
