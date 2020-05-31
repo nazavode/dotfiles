@@ -12,6 +12,9 @@ LC_CTYPE=en_US.UTF-8
 if [[ -d /cineca/ ]]; then
   CINECA=true
   CINECA_CLUSTER="$(hostname -f | cut -d '.' -f 2)"
+  # Setup a sane working environment:
+  ulimit -t unlimited
+  umask u=rwx,g-rwx,o-rwx
 fi
 
 # [ubuntu] Enable package suggestions
