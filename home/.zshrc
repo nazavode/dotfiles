@@ -111,9 +111,6 @@ zstyle ":completion:*:commands" rehash 1
 # Start oh-my-zsh
 source "$ZSH/oh-my-zsh.sh"
 
-# autosuggestion color (value reference: colortest-python -n)
-# and buffer size. Override values set by plugin during loading.
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=238"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 ################################################################################
