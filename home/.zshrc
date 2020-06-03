@@ -108,6 +108,7 @@ plugins=(zsh-autosuggestions zsh-syntax-highlighting)
 # Forces autocompletion to refresh
 zstyle ":completion:*:commands" rehash 1
 
+ZSH_DISABLE_COMPFIX=true
 # Start oh-my-zsh
 source "$ZSH/oh-my-zsh.sh"
 
