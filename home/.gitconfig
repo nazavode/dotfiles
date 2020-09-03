@@ -51,3 +51,5 @@
 
 [pull]
 	rebase = true
+[svn]
+	rmdir = true
