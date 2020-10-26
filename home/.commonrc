@@ -27,6 +27,11 @@ if [[ -d "${HOME}/.local/bin" ]]; then
   PATH="${HOME}/.local/bin:${PATH}"
 fi
 
+# Add homebrew-installed sbin commands
+if [[ -d "/usr/local/sbin" && ! "$PATH" =~ ".*/usr/local/sbin.*" ]]; then
+  PATH="/usr/local/sbin:${PATH}"
+fi
+
 ################################################################################
 # Setup flavours of ls
 ################################################################################
